@@ -1,35 +1,5 @@
-<!-- <script>
-// @ts-nocheck
-export let data;
-  // import { pokemon } from "../stores/pokestore";
-  let searchTerm = "";
-  let filteredPokemon = [];
 
-  $:{
-
-    if(searchTerm){
-      filteredPokemon = data.pokemon.filter(pokeman => pokeman.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    }
-    else{
-      filteredPokemon = [ ... data.pokemon]
-    }
-  }
-
-  import PokemanSingle from "../components/+pokemanSingle.svelte";
-</script>
-
-<h1 class="text-4xl text-center my-8 uppercase">Welcome to SvelteKit</h1>
-<p>
-  Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation
-</p>
-
-<input type="text" bind:value={searchTerm} placeholder="search" class="w-full rounded-md text-lg p-4 border-2 mb-4 border-gray-200">
-
-<div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-  {#each filteredPokemon as pokeman}
-    <PokemanSingle {pokeman} />
-  {/each}
-</div> -->
+<!-- 
 <form class="pb-4 m-auto w-full md:w-96">
   <div class=" gap-6 mb-6 md:grid-cols-2 items-end" >
       <div class="">
@@ -49,5 +19,84 @@ export let data;
               <p class="p-4">NEW NOTE NEW NOTE NEW NOTE NEW NOTE NEW NOTE NEW NOTE NEW NOTE NEW NOTE NEW NOTE</p>
             </div>
 
-          </div>
+          </div> -->
+        
+<div class="flex justify-center items-center">
+        <div class="m-auto " id="plot" bind:this={plotDiv}></div>
+        <div class="m-auto ">
+            <div class= "bg-black w-56 h-56 " id="image" bind:this={imageDiv}></div>
+      </div>
+      </div>
 
+        <script>
+          import { onMount } from 'svelte';
+          let plotDiv;
+          let imageDiv;
+
+          export let data;
+
+          const input_folder = 'D:\\miniset_resized\\'
+          const resized_images = 'src\\resized_images\\'
+
+          onMount(() => {
+            data.tsneData.forEach(item => {
+              item.path = item.path.replace(input_folder, '');
+              item.path = resized_images + item.path;
+              // console.log(item.path);
+            });
+            
+            const imageUrls = data.tsneData.map(item => item.path);
+            
+          const trace = [{
+            x: [],
+            y: [],
+            mode: 'markers',
+            type: 'scatter'
+          }];
+
+          data.tsneData.forEach(d => {
+            trace[0].x.push(d.point[0]);
+            trace[0].y.push(d.point[1]);
+          });
+          
+
+          const layout = {
+            hovermode: 'closest',
+            width: 800,
+            height: 500,
+            xaxis: { title: 't-SNE dimension 1' },
+            yaxis: { title: 't-SNE dimension 2' }
+          };
+      
+      
+          Plotly.newPlot('plot', trace, layout, {scrollZoom: true});
+
+
+          plotDiv.on('plotly_hover', event => {
+            const pointIndex = event.points[0].pointIndex;
+            const path = imageUrls[pointIndex];
+            imageDiv.innerHTML = `<img src="${path}">`;
+          });
+      
+          
+          // const y = document.getElementsByClassName("xy");
+          // const plot = y[0];
+
+          //   plotDiv.on('plotly_hover', e => {
+          //     // const x = e.clientX - e.target.offsetLeft;
+          //     // const y = e.clientY - e.target.offsetTop;
+          //     // imageDiv.style.transform = `translate(${x}px, ${y}px)`;
+          //     // // console.log(imageDiv.style);
+          //     // console.log(e);
+          // });
+          
+            // plotDiv.addEventListener('mousemove', (e) => {
+            //   const x = e.clientX - e.target.offsetLeft;
+            //   const y = e.clientY - e.target.offsetTop;
+
+            //   imageDiv.style.transform = `translate(${x}px, ${y}px)`;
+            //   console.log(imageDiv.style);
+            // });
+            
+          });    
+          </script>

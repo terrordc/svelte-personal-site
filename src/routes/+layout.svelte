@@ -4,7 +4,7 @@
   </script>
 
 <div class="bg-zinc-500">
-  <div class=" px-32 max-w-6xl mx-auto">
+  <div class=" px-32 max-w-8xl mx-auto">
     <Nav/>
 <slot></slot>
 </div>
