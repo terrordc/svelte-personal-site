@@ -32,21 +32,47 @@
         #a78bfa violet-400 -->
   <!--  #1d4ed8 blue 700 -->
 
-<div>
-  <h1 class="text-2xl text-center my-6 font-bold">t-SNE Map</h1>
-  <div class="flex justify-center items-center flex-wrap">
-    <div class="flex-auto w-96" id="plot" bind:this={plotDiv}></div>
-      <div class="mx-6 my-6">
-          <div class= "bg-black w-56 h-56 " id="image" bind:this={imageDiv}></div>
+
+  <div>
+    <h1 class="text-2xl text-center my-6 font-bold">t-SNE Map</h1>
+    <div class="flex justify-center items-center flex-wrap">
+      <div class="flex-auto w-96" id="plot" bind:this={plotDiv}></div>
+        <div class="mx-6 my-6">
+            <div class= "bg-black w-56 h-56 " id="image" bind:this={imageDiv}></div>
+        </div>
       </div>
     </div>
+
+<div>
+  <h1 class="my-6 text-2xl text-center font-bold">My works</h1>
+  <div class="flex justify-center items-center">
+  <div class="flex  items-center max-w-screen-xl mt-6 flex-col md:flex-row flex-wrap ">
+    {#each imageList as image}
+    <img src={`public/display-images/${image}`} class="basis-1/3 w-64 m-6 flex-auto" alt={image} />
+  {/each}
   </div>
+</div>
+</div>
+
 
 
     
 <script>
 
+
+let imageList = [];
+    // Fetch the list of images from the server
+    async function fetchImages() {
+      const currentDomain = `${window.location.protocol}//${window.location.hostname}`;
+      const response = await fetch(`${currentDomain}:5173/api/display`);
+      imageList = await response.json();
+      imageList = Object.values(imageList['images']);
+    }
     import { onMount } from 'svelte';
+    onMount(fetchImages);
+
+
+
     let plotDiv;
     let imageDiv;
     export let data;
@@ -85,8 +111,13 @@
     Plotly.newPlot('plot', trace, layout, config);
     plotDiv.on('plotly_hover', event => {
       const pointIndex = event.points[0].pointIndex;
+
+
       const path = imageUrls[pointIndex];
       imageDiv.innerHTML = `<img src="${path}">`;
+      console.log(imageUrls);
+      console.log(path);
+
     });
   });    
 </script>

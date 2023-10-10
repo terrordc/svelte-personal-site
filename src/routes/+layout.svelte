@@ -1,7 +1,7 @@
 <script>
     import "../app.css";
     import Nav from "../components/+nav.svelte";
-    import Display from "../components/+display.svelte";
+
 
   </script>
 
@@ -13,7 +13,7 @@
     
     
 <slot></slot>
-<Display/>
+
 <!-- <div class="flex justify-around items-center flex-wrap"></div> -->
 </div>
 </div>

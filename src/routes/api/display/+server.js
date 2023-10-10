@@ -12,7 +12,7 @@ export function GET (){
       }
       else{ return files}
     });
-    console.log(images);
+
     return new Response(JSON.stringify({images}));
     
   };
