@@ -20,83 +20,73 @@
             </div>
 
           </div> -->
-        
-<div class="flex justify-center items-center">
-        <div class="m-auto " id="plot" bind:this={plotDiv}></div>
-        <div class="m-auto ">
-            <div class= "bg-black w-56 h-56 " id="image" bind:this={imageDiv}></div>
+  <!--  #e9d5ff purple-200
+        #a5b4fc indigo-300
+        #818cf8 indigo-400
+        #3b82f6 blue-500
+        #0369a1 sky-700
+        #075985 sky-800
+        #082f49 sky-950 -->
+  <!--  #ede9fe violet-100
+        #ddd6fe violet-200
+        #a78bfa violet-400 -->
+  <!--  #1d4ed8 blue 700 -->
+
+<div>
+  <h1 class="text-2xl text-center my-6 font-bold">t-SNE Map</h1>
+  <div class="flex justify-center items-center flex-wrap">
+    <div class="flex-auto w-96" id="plot" bind:this={plotDiv}></div>
+      <div class="mx-6 my-6">
+          <div class= "bg-black w-56 h-56 " id="image" bind:this={imageDiv}></div>
       </div>
-      </div>
+    </div>
+  </div>
 
-        <script>
-          import { onMount } from 'svelte';
-          let plotDiv;
-          let imageDiv;
 
-          export let data;
+    
+<script>
 
-          const input_folder = 'D:\\miniset_resized\\'
-          const resized_images = 'src\\resized_images\\'
+    import { onMount } from 'svelte';
+    let plotDiv;
+    let imageDiv;
+    export let data;
+    const input_folder = 'D:\\miniset_resized\\'
+    const resized_images = 'src\\resized_images\\'
 
-          onMount(() => {
-            data.tsneData.forEach(item => {
-              item.path = item.path.replace(input_folder, '');
-              item.path = resized_images + item.path;
-              // console.log(item.path);
-            });
-            
-            const imageUrls = data.tsneData.map(item => item.path);
-            
-          const trace = [{
-            x: [],
-            y: [],
-            mode: 'markers',
-            type: 'scatter'
-          }];
-
-          data.tsneData.forEach(d => {
-            trace[0].x.push(d.point[0]);
-            trace[0].y.push(d.point[1]);
-          });
-          
-
-          const layout = {
-            hovermode: 'closest',
-            width: 800,
-            height: 500,
-            xaxis: { title: 't-SNE dimension 1' },
-            yaxis: { title: 't-SNE dimension 2' }
-          };
+    onMount(() => {
+      data.tsneData.forEach(item => {
+        item.path = item.path.replace(input_folder, '');
+        item.path = resized_images + item.path;
+        // console.log(item.path);
+      });
       
+      const imageUrls = data.tsneData.map(item => item.path);
       
-          Plotly.newPlot('plot', trace, layout, {scrollZoom: true});
+    const trace = [{
+      x: [],
+      y: [],
+      mode: 'markers',
+      type: 'scatter'
+    }];
 
+    data.tsneData.forEach(d => {
+      trace[0].x.push(d.point[0]);
+      trace[0].y.push(d.point[1]);
+    });
+    var config = {responsive: true, scrollZoom: true}
+    const layout = {
+      hovermode: 'closest',
+      // width: 800,
+      // height: 500,
+      xaxis: { title: 't-SNE dimension 1' },
+      yaxis: { title: 't-SNE dimension 2' }
+    };
 
-          plotDiv.on('plotly_hover', event => {
-            const pointIndex = event.points[0].pointIndex;
-            const path = imageUrls[pointIndex];
-            imageDiv.innerHTML = `<img src="${path}">`;
-          });
-      
-          
-          // const y = document.getElementsByClassName("xy");
-          // const plot = y[0];
-
-          //   plotDiv.on('plotly_hover', e => {
-          //     // const x = e.clientX - e.target.offsetLeft;
-          //     // const y = e.clientY - e.target.offsetTop;
-          //     // imageDiv.style.transform = `translate(${x}px, ${y}px)`;
-          //     // // console.log(imageDiv.style);
-          //     // console.log(e);
-          // });
-          
-            // plotDiv.addEventListener('mousemove', (e) => {
-            //   const x = e.clientX - e.target.offsetLeft;
-            //   const y = e.clientY - e.target.offsetTop;
-
-            //   imageDiv.style.transform = `translate(${x}px, ${y}px)`;
-            //   console.log(imageDiv.style);
-            // });
-            
-          });    
-          </script>
+    Plotly.newPlot('plot', trace, layout, config);
+    plotDiv.on('plotly_hover', event => {
+      const pointIndex = event.points[0].pointIndex;
+      const path = imageUrls[pointIndex];
+      imageDiv.innerHTML = `<img src="${path}">`;
+    });
+  });    
+</script>
